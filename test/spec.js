@@ -8,8 +8,8 @@ it('can auto-cluster', function(done) {
     setTimeout(function() {
         a.stop()
         b.stop()
-        assert(a.peers.indexOf(b.id) >= 0)
-        assert(b.peers.indexOf(a.id) >= 0)
+        assert(a.peers.indexOf(b.id) >= 0 && a.peers.length == 1)
+        assert(b.peers.indexOf(a.id) >= 0 && b.peers.length == 1)
         done()
     }, 50)
 })

@@ -10,9 +10,10 @@ function serviceCluster(options) {
 }
 serviceCluster.prototype = {
     start : function() {
-        if (!this.port) freeport(function(err, port) {
+        if (!this.options.host) this.options.host = ip.address()
+        if (!this.options.port) freeport(function(err, port) {
             if (err) { console.error(err); process.exit(1) }
-            this.port = port
+            this.options.port = port
             this.startMdns()
         }.bind(this))
         else startMdns()
@@ -61,8 +62,8 @@ serviceCluster.prototype = {
                         name : this.options.name,
                         data : JSON.stringify({ 
                             id   : this.id, 
-                            port : this.port, 
-                            host : ip.address() 
+                            port : this.options.port, 
+                            host : this.options.host
                         })
                     }
                 ]

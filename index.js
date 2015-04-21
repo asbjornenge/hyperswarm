@@ -1,5 +1,6 @@
-var mdns = require('multicast-dns')
-var uuid = require('node-uuid')
+var mdns     = require('multicast-dns')
+var uuid     = require('node-uuid')
+var freeport = require('freeport')
 
 function serviceCluster(options) {
     this.id      = uuid.v4()
@@ -8,16 +9,20 @@ function serviceCluster(options) {
 }
 serviceCluster.prototype = {
     start : function() {
-        this.mdns = mdns()
-        this.mdns.on('query', this.handleQuery.bind(this))
-        this.mdns.on('response', this.handleResponse.bind(this))
-        this.query()
-        this.queryInterval = setInterval(this.query.bind(this), 5000)
+        freeport(function(err, port) {
+            if (err) { console.error(err); process.exit(1) }
+            this.port = port
+            this.mdns = mdns()
+            this.mdns.on('query', this.handleQuery.bind(this))
+            this.mdns.on('response', this.handleResponse.bind(this))
+            this.query()
+            this.queryInterval = setInterval(this.query.bind(this), 5000)
+        }.bind(this))
         return this
     },
     stop : function() {
         clearInterval(this.queryInterval)
-        this.mdns.destroy()
+        if (this.mdns) this.mdns.destroy()
         return this
     },
     query : function() {
@@ -25,20 +30,18 @@ serviceCluster.prototype = {
             questions : [
                 {
                     name : this.options.name,
-                    type : 'SRV'
+                    type : 'TXT'
                 }
             ]
         })
     },
     handleResponse : function(res) {
         res.answers.forEach(function(a) {
-            if (a.name != this.options.name) return
-            if (a.type == 'TXT') {
-                var id = JSON.parse(a.data).id
-                if (id == this.id) return
-                if (this.peers.indexOf(id) >= 0) return
-                this.peers.push(id)
-            }
+            if (a.type != 'TXT' || a.name != this.options.name) return
+            var id = JSON.parse(a.data).id
+            if (id == this.id) return
+            if (this.peers.indexOf(id) >= 0) return
+            this.peers.push(id)
         }.bind(this))
     },
     handleQuery : function(query) { 
@@ -47,16 +50,10 @@ serviceCluster.prototype = {
             this.mdns.respond({
                 answers : [
                     {
-                        type : 'SRV',
-                        ttl  : 5,
-                        name : this.options.name,
-                        data : { port : 5000, target : '127.0.0.1' }
-                    },
-                    {
                         type : 'TXT',
                         ttl  : 5,
                         name : this.options.name,
-                        data : JSON.stringify({ id : this.id })
+                        data : JSON.stringify({ id : this.id, port : this.port })
                     }
                 ]
             })

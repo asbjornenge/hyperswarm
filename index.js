@@ -47,8 +47,9 @@ serviceCluster.prototype = {
             if (a.type != 'TXT' || a.name != this.options.name) return
             var peer = JSON.parse(a.data)
             if (peer.id == this.id) return
-            if (this.peers.indexOf(peer.id) >= 0) return
-            this.peers.push(peer.id)
+            var peerIds = this.peers.map(function(peer) { return peer.id })
+            if (peerIds.indexOf(peer.id) >= 0) return
+            this.peers.push(peer)
         }.bind(this))
     },
     handleQuery : function(query) { 

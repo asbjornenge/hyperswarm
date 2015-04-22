@@ -1,12 +1,14 @@
-var mdns     = require('multicast-dns')
-var uuid     = require('node-uuid')
-var freeport = require('freeport')
-var ip       = require('ip')
+var mdns      = require('multicast-dns')
+var uuid      = require('node-uuid')
+var freeport  = require('freeport')
+var ip        = require('ip')
+var commitlog = require('./commit-log')
 
 function serviceCluster(options) {
     this.id      = uuid.v4()
     this.peers   = []
     this.options = this.validateOptions(options)
+    this.commitlog = commitlog(options.name, options.commitlog || {})
 }
 serviceCluster.prototype = {
     start : function() {

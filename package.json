@@ -11,10 +11,14 @@
   "dependencies": {
     "forkdb": "^9.1.1",
     "freeport": "^1.0.4",
+    "fwdb": "^2.1.0",
     "ip": "^0.3.2",
     "level": "^0.18.0",
+    "levelup": "^0.19.0",
     "lockfile": "^1.0.0",
+    "memdown": "^1.0.0",
     "multicast-dns": "^2.1.0",
-    "node-uuid": "^1.4.3"
+    "node-uuid": "^1.4.3",
+    "proper-lockfile": "^1.0.0"
   }
 }

@@ -8,7 +8,7 @@ function serviceCluster(options) {
     this.id      = uuid.v4()
     this.peers   = []
     this.options = this.validateOptions(options)
-    this.commitlog = commitlog(options.name, options.commitlog || {})
+    this.commitlog = commitlog(options.name, { id : this.id })
 }
 serviceCluster.prototype = {
     start : function() {

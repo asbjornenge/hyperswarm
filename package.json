@@ -13,6 +13,7 @@
     "freeport": "^1.0.4",
     "hyperemitter": "^1.1.1",
     "ip": "^0.3.2",
+    "memdb": "^0.2.0",
     "multicast-dns": "^2.1.0",
     "node-uuid": "^1.4.3",
     "object.assign": "^2.0.1"

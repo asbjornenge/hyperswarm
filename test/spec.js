@@ -16,10 +16,10 @@ it('can auto-cluster', function(done) {
     }, 50)
 })
 
-it('shares a distributed commit-log', function() {
+//it('shares a distributed commit-log', function() {
 
-})
+//})
 
-it('can recover lost nodes', function() {
+//it('can recover lost nodes', function() {
     // patch holes in commit-log
-})
+//})

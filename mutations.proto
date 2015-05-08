@@ -1,11 +1,10 @@
-
-message ObjectMutations {
-  repeated ObjectMutation = 1;
+message mutations {
+  repeated mutation mutations = 1;
 }
 
-message ObjectMutation {
-  required string from = 1;
-  required repeated string key = 2;
+message mutation {
+  required string type = 1;
+  repeated string key = 2;
   required string value = 3;
 }
 

@@ -16,9 +16,21 @@ it('can auto-cluster', function(done) {
     }, 50)
 })
 
-//it('shares a distributed commit-log', function() {
-
-//})
+it.only('shares a distributed state', function(done) {
+    var a = cluster('superservice2').start()
+    var b = cluster('superservice2').start()
+    // Allow a little time for the discovery
+    setTimeout(function() {
+        a.emitter.emit('mutation', {type : 'put', key : ['reincarnation'], value : 'yolo'})
+        // Allow a little time for propagation
+        setTimeout(function() {
+            assert(b.state.reincarnation == 'yolo')
+            a.stop()
+            b.stop()
+            done()
+        }, 100)
+    }, 50)
+})
 
 //it('can recover lost nodes', function() {
     // patch holes in commit-log

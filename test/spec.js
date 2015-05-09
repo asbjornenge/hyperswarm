@@ -21,10 +21,12 @@ it.only('shares a distributed state', function(done) {
     var b = cluster('superservice2').start()
     // Allow a little time for the discovery
     setTimeout(function() {
-        a.clog.commit({type : 'put', key : ['reincarnation'], value : 'yolo'})
+        a.setState({ reincarnation : 'yolo' })
+        b.setState({ lives : [1,2,3] })
         // Allow a little time for propagation
         setTimeout(function() {
-            assert(b.state.reincarnation == 'yolo')
+            assert(b.state.get('reincarnation') == 'yolo')
+            assert(a.state.get('lives').get(0) == 1)
             a.stop()
             b.stop()
             done()

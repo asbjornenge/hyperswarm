@@ -2,7 +2,7 @@ var fs           = require('fs')
 var path         = require('path')
 var hyperemitter = require('hyperemitter')
 var memdb        = require('memdb')
-var schema       = fs.readFileSync(path.join('.', 'mutations.proto'))
+var schema       = fs.readFileSync(path.join('.', 'commit.proto'))
 
 function clog(options) {
     this.options = options
@@ -21,8 +21,8 @@ clog.prototype = {
     on : function(e, fn) {
         this.hypem.on(e, fn)
     },
-    commit : function(data) {
-        this.hypem.emit('mutation', data)
+    commit : function(changeset) {
+        this.hypem.emit('commit', {changeset : changeset})
     },
     connect : function(peer) {
         this.hypem.connect(peer.port, peer.host, function(err) {

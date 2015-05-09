@@ -1,16 +1,14 @@
-var uuid     = require('node-uuid')
-var diff     = require('changeset')
-var mdns     = require('./mdns')
-var clog     = require('./clog')
-var utils    = require('./utils')
-
-// TODO: Have a setState function that does
-// object.assign, diff and emit diff !!
+var uuid      = require('node-uuid')
+var immutable = require('immutable')
+var flat      = require('flat')
+var mdns      = require('./mdns')
+var clog      = require('./clog')
+var utils     = require('./utils')
 
 function hyperswarm(options) {
     this.id           = uuid.v4()
     this.options      = options
-    this.state        = {}
+    this.state        = immutable.Map()
     this.peers        = []
     this.mdns         = new mdns(options)
     this.clog         = new clog(options)
@@ -19,7 +17,7 @@ hyperswarm.prototype = {
     start : function() {
         if (!this.ready) return utils.initNode(this, this.start.bind(this))
         this.clog.start(function() {
-            this.clog.on('mutation', this.handleStateMutation.bind(this))
+            this.clog.on('commit', this.handleStateMutation.bind(this))
             this.mdns.on('peer', this.handlePeer.bind(this))
             this.mdns.start()
         }.bind(this))
@@ -30,6 +28,9 @@ hyperswarm.prototype = {
         this.clog.stop()
         return this
     },
+    setState : function(changeset) {
+        this.clog.commit(JSON.stringify(flat(changeset)))
+    },
     handlePeer : function(peer) {
         var peerIds = this.peers.map(function(p) { return p.id })
         if (peer.id == this.id) return
@@ -37,8 +38,9 @@ hyperswarm.prototype = {
         this.peers.push(peer)
         this.clog.connect(peer)
     },
-    handleStateMutation : function(change) {
-        diff.apply([change], this.state, true) 
+    handleStateMutation : function(commit) {
+        var changeset = flat.unflatten(JSON.parse(commit.changeset))
+        this.state = this.state.merge(changeset)
     }
 }
 

@@ -29,7 +29,9 @@ setTimeout(function() {
 
 // Computer C on the same network, even more later...
 var c = hswarm('superswarm').start()
-c.state.get('nob') // => 5
+setTimeout(function() {
+    c.state.get('nob') // => 5
+},100)
 ```
 
 ## Changelog

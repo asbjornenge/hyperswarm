@@ -6,17 +6,17 @@ it('can auto-cluster', function(done) {
     var b = cluster('superservice').start()
     // Allow a little time for the discovery
     setTimeout(function() {
-        a.stop()
-        b.stop()
         var a_peerIds = a.peers.map(function(peer) { return peer.id })
         var b_peerIds = b.peers.map(function(peer) { return peer.id })
         assert(a_peerIds.indexOf(b.id) >= 0 && a.peers.length == 1)
         assert(b_peerIds.indexOf(a.id) >= 0 && b.peers.length == 1)
-        done()
-    }, 50)
+        a.stop()
+        b.stop()
+        setTimeout(done, 100)
+    }, 100)
 })
 
-it.only('shares a distributed state', function(done) {
+it('shares a distributed state', function(done) {
     var a = cluster('superservice2').start()
     var b = cluster('superservice2').start()
     // Allow a little time for the discovery
@@ -29,9 +29,9 @@ it.only('shares a distributed state', function(done) {
             assert(a.state.get('lives').get(0) == 1)
             a.stop()
             b.stop()
-            done()
-        }, 100)
-    }, 50)
+            setTimeout(done, 100)
+        }, 150)
+    }, 100)
 })
 
 //it('can recover lost nodes', function() {

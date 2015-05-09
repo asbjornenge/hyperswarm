@@ -1,9 +1,9 @@
 var assert = require('assert')
-var cluster = require('../')
+var hswarm = require('../')
 
-it('can auto-cluster', function(done) {
-    var a = cluster('superservice').start()
-    var b = cluster('superservice').start()
+it('can auto-hswarm', function(done) {
+    var a = hswarm('superservice').start()
+    var b = hswarm('superservice').start()
     // Allow a little time for the discovery
     setTimeout(function() {
         var a_peerIds = a.peers.map(function(peer) { return peer.id })
@@ -17,19 +17,25 @@ it('can auto-cluster', function(done) {
 })
 
 it('shares a distributed state', function(done) {
-    var a = cluster('superservice2').start()
-    var b = cluster('superservice2').start()
+    var a = hswarm('superservice2').start()
+    var b = hswarm('superservice2').start()
     // Allow a little time for the discovery
     setTimeout(function() {
         a.setState({ reincarnation : 'yolo' })
-        b.setState({ lives : [1,2,3] })
+        b.setState({ lives : [1,2,3], eple : { kake : 'moms'}})
         // Allow a little time for propagation
         setTimeout(function() {
             assert(b.state.get('reincarnation') == 'yolo')
             assert(a.state.get('lives').get(0) == 1)
-            a.stop()
-            b.stop()
-            setTimeout(done, 100)
+            // Start a new from scratch
+            var c = hswarm('superservice2').start()
+            setTimeout(function() {
+                assert(c.state.get('eple').get('kake') == 'moms')
+                a.stop()
+                b.stop()
+                c.stop()
+                setTimeout(done, 100)
+            },100)
         }, 150)
     }, 100)
 })

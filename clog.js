@@ -28,6 +28,11 @@ CommitLog.prototype = {
     },
     commit : function(data) {
         this.hypem.emit('mutation', data)
+    },
+    connect : function(peer) {
+        this.hypem.connect(peer.port, peer.host, function(err) {
+            if (err) { console.log('Peer connection error', err, peer); }
+        })
     }
 }
 

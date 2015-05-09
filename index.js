@@ -3,7 +3,6 @@ var diff         = require('changeset')
 var ip           = require('ip')
 var mdns         = require('./mdns')
 var clog         = require('./clog')
-var Peer         = require('./peer')
 
 function HyperSwarm(options) {
     this.id           = uuid.v4()
@@ -34,7 +33,8 @@ HyperSwarm.prototype = {
         var peerIds = this.peers.map(function(p) { return p.id })
         if (peer.id == this.id) return
         if (peerIds.indexOf(peer.id) >= 0) return
-        this.peers.push(new Peer(peer, this.clog.hypem, this.id))
+        this.peers.push(peer)
+        this.clog.connect(peer)
     },
     handleStateMutation : function(change) {
         diff.apply([change], this.state, true) 

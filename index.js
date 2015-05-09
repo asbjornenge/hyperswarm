@@ -1,23 +1,24 @@
-var uuid         = require('node-uuid')
-var diff         = require('changeset')
-var ip           = require('ip')
-var mdns         = require('./mdns')
-var clog         = require('./clog')
+var uuid     = require('node-uuid')
+var diff     = require('changeset')
+var mdns     = require('./mdns')
+var clog     = require('./clog')
+var utils    = require('./utils')
 
-function HyperSwarm(options) {
+// TODO: Have a setState function that does
+// object.assign, diff and emit diff !!
+
+function hyperswarm(options) {
     this.id           = uuid.v4()
     this.options      = options
-    this.options.id   = this.id
-    this.options.host = ip.address() 
     this.state        = {}
     this.peers        = []
     this.mdns         = new mdns(options)
     this.clog         = new clog(options)
 }
-HyperSwarm.prototype = {
+hyperswarm.prototype = {
     start : function() {
-        this.clog.start(function(port) {
-            this.options.port = port
+        if (!this.ready) return utils.initNode(this, this.start.bind(this))
+        this.clog.start(function() {
             this.clog.on('mutation', this.handleStateMutation.bind(this))
             this.mdns.on('peer', this.handlePeer.bind(this))
             this.mdns.start()
@@ -48,5 +49,5 @@ module.exports = function(name, options) {
     } 
     options = options || {}
     options.name = name
-    return new HyperSwarm(options)
+    return new hyperswarm(options)
 }

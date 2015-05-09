@@ -1,16 +1,16 @@
 var EventEmitter = require('events').EventEmitter
 var assign       = Object.assign || require('object.assign')
-var mdns         = require('multicast-dns')
+var multicast    = require('multicast-dns')
 var uuid         = require('node-uuid')
 var freeport     = require('freeport')
 var ip           = require('ip')
 
-function mdnsNode(options) {
+function mdns(options) {
     this.options = options 
 }
-mdnsNode.prototype = {
+mdns.prototype = {
     start : function() {
-        this.mdns = mdns()
+        this.mdns = multicast()
         this.mdns.on('query', this.handleQuery.bind(this))
         this.mdns.on('response', this.handleResponse.bind(this))
         this.query()
@@ -58,6 +58,5 @@ mdnsNode.prototype = {
         }.bind(this))
     }
 }
-assign(mdnsNode.prototype, EventEmitter.prototype)
-
-module.exports = mdnsNode 
+assign(mdns.prototype, EventEmitter.prototype)
+module.exports = mdns

@@ -14,12 +14,13 @@ function hyperswarm(options) {
     this.clog         = new clog(options)
 }
 hyperswarm.prototype = {
-    start : function() {
-        if (!this.ready) return utils.initNode(this, this.start.bind(this))
+    start : function(cb) {
+        if (!this.ready) return utils.initNode(this, this.start.bind(this, cb))
         this.clog.start(function() {
             this.clog.on('commit', this.handleStateMutation.bind(this))
             this.mdns.on('peer', this.handlePeer.bind(this))
             this.mdns.start()
+            if (typeof cb === 'function') cb()
         }.bind(this))
         return this
     },
@@ -44,12 +45,13 @@ hyperswarm.prototype = {
     }
 }
 
-module.exports = function(name, options) {
+module.exports = function(name, options, cb) {
     if (!name) { 
         console.error('Service name required')
         process.exit(1) 
-    } 
+    }
+    if (typeof options === 'function') { cb = options; options = undefined }
     options = options || {}
     options.name = name
-    return new hyperswarm(options)
+    return new hyperswarm(options).start(cb)
 }

@@ -16,10 +16,10 @@ npm install --save hyperswarm
 var hswarm = require('hyperswarm')
 
 // ComputerA
-var a = hswarm('superswarm').start()
+var a = hswarm('superswarm')
 
 // ComputerB on the same network
-var b = hswarm('superswarm').start()
+var b = hswarm('superswarm')
 
 // A little while later...
 a.setState({ nob : 5 })
@@ -28,7 +28,7 @@ setTimeout(function() {
 },100)
 
 // Computer C on the same network, even more later...
-var c = hswarm('superswarm').start()
+var c = hswarm('superswarm')
 setTimeout(function() {
     c.state.get('nob') // => 5
 },100)

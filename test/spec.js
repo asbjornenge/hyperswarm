@@ -1,4 +1,5 @@
 var assert = require('assert')
+var memdb  = require('memdb')
 var hswarm = require('../')
 
 it('can auto-hswarm', function(done) {
@@ -10,8 +11,8 @@ it('can auto-hswarm', function(done) {
         var b_peerIds = b.peers.map(function(peer) { return peer.id })
         assert(a_peerIds.indexOf(b.id) >= 0 && a.peers.length == 1)
         assert(b_peerIds.indexOf(a.id) >= 0 && b.peers.length == 1)
-        a.stop()
-        b.stop()
+        a.close()
+        b.close()
         setTimeout(done, 100)
     }, 100)
 })
@@ -19,30 +20,51 @@ it('can auto-hswarm', function(done) {
 it('shares a distributed state', function(done) {
     var a = hswarm('superservice2')
     var b = hswarm('superservice2')
-    // Allow a little time for the discovery
+    a.setState({ reincarnation : 'yolo' })
+    b.setState({ lives : [1,2,3], eple : { kake : 'moms'}})
+    // Allow a little time for propagation
     setTimeout(function() {
-        a.setState({ reincarnation : 'yolo' })
-        b.setState({ lives : [1,2,3], eple : { kake : 'moms'}})
-        // Allow a little time for propagation
+        assert(b.state.get('reincarnation') == 'yolo')
+        assert(a.state.get('lives').get(0) == 1)
+        // Start a new from scratch
+        var c = hswarm('superservice2')
         setTimeout(function() {
-            assert(b.state.get('reincarnation') == 'yolo')
-            assert(a.state.get('lives').get(0) == 1)
-            // Start a new from scratch
-            var c = hswarm('superservice2')
-            setTimeout(function() {
-                assert(c.state.get('eple').get('kake') == 'moms')
-                a.stop()
-                b.stop()
-                c.stop()
-                setTimeout(done, 100)
-            },150)
-        }, 150)
-    }, 100)
+            assert(c.state.get('eple').get('kake') == 'moms')
+            a.close()
+            b.close()
+            c.close()
+            setTimeout(done, 100)
+        },150)
+    }, 150)
 })
 
-//it('can recover lost nodes', function() {
-    // patch holes in commit-log
-//})
+// Kida silly netsplit test, but netsplits are hard to simulate
+it('can recover from netsplits', function(done) {
+    var bdb = memdb()
+    var a = hswarm('shakynetworkswarm')
+    var b = hswarm('shakynetworkswarm', { db : bdb })
+    a.setState({ volume : 5 })
+    setTimeout(function() {
+        assert(b.state.get('volume') == 5)
+        b.close()
+        a.setState({ volume : 6 })
+        a.setState({ volume : 7 })
+        a.setState({ volume : 8 })
+        bdb.open(function() {
+            var c = hswarm('shakynetworkswarm', { db : bdb })
+            var changes = 0
+            var test = function() {
+                changes += 1
+                if (changes == 3) { 
+                    a.close()
+                    c.close()
+                    done() 
+                }
+            }
+            c.on('change', test)
+        })
+    },150)
+})
 
 it('emits events on peer and statechange', function(done) {
     var events = []
@@ -50,8 +72,8 @@ it('emits events on peer and statechange', function(done) {
         events.push(type)
         if (events.indexOf('peer') < 0) return
         if (events.indexOf('change') < 0) return
-        a.stop()
-        b.stop()
+        a.close()
+        b.close()
         done()
     }
     var a = hswarm('superswarm3')

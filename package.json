@@ -7,7 +7,7 @@
     "test": "mocha -R nyan --watch --check-leaks"
   },
   "author": "",
-  "license": "ISC",
+  "license": "BSD",
   "dependencies": {
     "flat": "^1.5.1",
     "freeport": "^1.0.4",

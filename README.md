@@ -41,6 +41,11 @@ c.close()
 
 ## Changelog
 
+### 1.0.1
+
+* Fixed path to proto file when used as module
+* Change event passes changeset instead of merged state, one can always get the state
+
 ### 1.0.0
 
 * Initial release :tada:

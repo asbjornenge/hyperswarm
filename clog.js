@@ -2,7 +2,7 @@ var fs           = require('fs')
 var path         = require('path')
 var hyperemitter = require('hyperemitter')
 var memdb        = require('memdb')
-var schema       = fs.readFileSync(path.join('.', 'commit.proto'))
+var schema       = fs.readFileSync(path.resolve(__dirname, 'commit.proto'))
 
 function clog(options) {
     this.options = options

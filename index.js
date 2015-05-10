@@ -44,7 +44,7 @@ hyperswarm.prototype = {
     handleStateMutation : function(commit) {
         var changeset = flat.unflatten(JSON.parse(commit.changeset))
         this.state = this.state.merge(changeset)
-        this.emit('change', this.state)
+        this.emit('change', changeset)
     }
 }
 assign(hyperswarm.prototype, eemitter.prototype)

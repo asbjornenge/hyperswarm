@@ -22,15 +22,15 @@ var a = hswarm('superswarm')
 var b = hswarm('superswarm')
 
 // A little while later...
-a.setState({ nob : 5 })
+a.setState({ volume : 5 })
 setTimeout(function() {
-    b.state.get('nob') // => 5
+    b.state.get('volume') // => 5
 },100)
 
 // Computer C on the same network, even more later...
 var c = hswarm('superswarm')
 setTimeout(function() {
-    c.state.get('nob') // => 5
+    c.state.get('volume') // => 5
 },100)
 ```
 

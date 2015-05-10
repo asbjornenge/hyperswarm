@@ -3,7 +3,6 @@ var assign       = Object.assign || require('object.assign')
 var multicast    = require('multicast-dns')
 var uuid         = require('node-uuid')
 var freeport     = require('freeport')
-var ip           = require('ip')
 
 function mdns(options) {
     this.options = options 

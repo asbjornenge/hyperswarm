@@ -29,7 +29,6 @@ hyperswarm.prototype = {
     stop : function() {
         this.mdns.stop()
         this.clog.stop()
-        return this
     },
     setState : function(changeset) {
         this.clog.commit(JSON.stringify(flat(changeset)))

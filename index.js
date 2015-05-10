@@ -26,7 +26,7 @@ hyperswarm.prototype = {
         }.bind(this))
         return this
     },
-    stop : function() {
+    close : function() {
         this.mdns.stop()
         this.clog.stop()
     },

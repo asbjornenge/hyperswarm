@@ -32,6 +32,11 @@ var c = hswarm('superswarm')
 setTimeout(function() {
     c.state.get('volume') // => 5
 },100)
+
+// Cleanup
+a.close()
+b.close()
+c.close()
 ```
 
 ## Changelog

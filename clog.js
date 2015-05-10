@@ -6,7 +6,7 @@ var schema       = fs.readFileSync(path.join('.', 'commit.proto'))
 
 function clog(options) {
     this.options = options
-    this.hypem   = new hyperemitter(memdb(), schema)
+    this.hypem   = new hyperemitter(options.db || memdb(), schema)
 }
 clog.prototype = {
     start : function(cb) {

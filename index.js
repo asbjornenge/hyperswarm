@@ -1,6 +1,8 @@
 var uuid      = require('node-uuid')
 var immutable = require('immutable')
 var flat      = require('flat')
+var eemitter  = require('events').EventEmitter
+var assign    = require('object.assign')
 var mdns      = require('./mdns')
 var clog      = require('./clog')
 var utils     = require('./utils')
@@ -38,12 +40,15 @@ hyperswarm.prototype = {
         if (peerIds.indexOf(peer.id) >= 0) return
         this.peers.push(peer)
         this.clog.connect(peer)
+        this.emit('peer', peer)
     },
     handleStateMutation : function(commit) {
         var changeset = flat.unflatten(JSON.parse(commit.changeset))
         this.state = this.state.merge(changeset)
+        this.emit('change', this.state)
     }
 }
+assign(hyperswarm.prototype, eemitter.prototype)
 
 module.exports = function(name, options, cb) {
     if (!name) { 

@@ -43,3 +43,22 @@ it('shares a distributed state', function(done) {
 //it('can recover lost nodes', function() {
     // patch holes in commit-log
 //})
+
+it('emits events on peer and statechange', function(done) {
+    var events = []
+    var test = function(type) {
+        events.push(type)
+        if (events.indexOf('peer') < 0) return
+        if (events.indexOf('change') < 0) return
+        a.stop()
+        b.stop()
+        done()
+    }
+    var a = hswarm('superswarm3')
+    a.on('peer', test.bind(undefined, 'peer'))
+    a.on('change', test.bind(undefined, 'change'))
+    var b = hswarm('superswarm3')
+    b.setState({ yolo : 'yeah'})
+})
+
+

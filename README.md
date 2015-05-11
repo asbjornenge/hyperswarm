@@ -41,6 +41,10 @@ c.close()
 
 ## Changelog
 
+### 1.0.2
+
+* Added missing metadata to package.json
+
 ### 1.0.1
 
 * Fixed path to proto file when used as module

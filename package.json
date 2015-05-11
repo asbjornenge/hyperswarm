@@ -1,13 +1,25 @@
 {
   "name": "hyperswarm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha -R nyan --watch --check-leaks"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asbjornenge/hyperswarm.git"
+  },
+  "keywords": [
+    "cccf",
+    "docker"
+  ],
+  "author": "Asbjorn Enge <asbjorn@hanafjedle.net>",
   "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/asbjornenge/hyperswarm/issues"
+  },
+  "homepage": "https://github.com/asbjornenge/hyperswarm",
   "dependencies": {
     "flat": "^1.5.1",
     "freeport": "^1.0.4",

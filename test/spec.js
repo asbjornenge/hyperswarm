@@ -14,7 +14,7 @@ it('can auto-hswarm', function(done) {
         a.close()
         b.close()
         setTimeout(done, 100)
-    }, 100)
+    }, 200)
 })
 
 it('shares a distributed state', function(done) {
@@ -34,8 +34,8 @@ it('shares a distributed state', function(done) {
             b.close()
             c.close()
             setTimeout(done, 100)
-        },150)
-    }, 150)
+        },250)
+    }, 250)
 })
 
 // Kida silly netsplit test, but netsplits are hard to simulate
@@ -53,7 +53,7 @@ it('can recover from netsplits', function(done) {
         bdb.open(function() {
             var c = hswarm('shakynetworkswarm', { db : bdb })
             var changes = 0
-            var test = function() {
+            var test = function(change) {
                 changes += 1
                 if (changes == 3) { 
                     a.close()
@@ -63,7 +63,7 @@ it('can recover from netsplits', function(done) {
             }
             c.on('change', test)
         })
-    },150)
+    },350)
 })
 
 it('emits events on peer and statechange', function(done) {

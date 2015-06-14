@@ -23,10 +23,11 @@
   "dependencies": {
     "flat": "^1.5.1",
     "freeport": "^1.0.4",
-    "hyperemitter": "^1.1.1",
+    "hyperemitter": "^1.2.0",
     "immutable": "^3.7.2",
     "memdb": "^0.2.0",
     "multicast-dns": "^2.1.0",
+    "network": "^0.1.3",
     "node-uuid": "^1.4.3",
     "object.assign": "^2.0.1"
   }

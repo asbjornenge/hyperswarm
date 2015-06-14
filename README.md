@@ -41,6 +41,10 @@ c.close()
 
 ## Changelog
 
+### 1.1.0
+
+* Broadcasting availability on active interface (if none specified)
+
 ### 1.0.2
 
 * Added missing metadata to package.json
